@@ -83,14 +83,15 @@ def update_user(id_user):
 def delete_user(id_user):
     user = User.query.get(id_user)
 
+    if id_user == current_user.id:
+        return jsonify({"message": "Não é permitido excluir o próprio usuário"}), 404
+    
     if user:
+        db.session.delete(user)
+        db.session.commit()
         return jsonify({"message": f"Usuário {id_user} excluído com sucesso"})
 
     return jsonify({"message": "Usuário não encontrado"}), 404
-
-@app.route("/hello-world" , methods=["GET"])
-def hello_world():
-    return "Hello, World!" 
 
 if __name__ == "__main__":
     app.run(debug=True)
